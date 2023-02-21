@@ -1,7 +1,9 @@
 data "aws_iam_policy_document" "ecr" {
     statement {
         effect = "Allow"
-        actions = ["sts:AssumeRoleWithWebIdentity"]
+        actions = [
+	"sts:AssumeRoleWithWebIdentity"
+	]
 
         principals {
             type = "Federated"
@@ -22,7 +24,16 @@ data "aws_iam_policy_document" "ecr" {
     }
 }
 
+data "aws_iam_policy" "ECRFullAccessPolGit" {
+  arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
+}
+
+
 resource "aws_iam_role" "ecr" {
     name = "ecr-jose"
     assume_role_policy = data.aws_iam_policy_document.ecr.json
+    managed_policy_arns = [data.aws_iam_policy.ECRFullAccessPolGit.arn]
 }
+
+
+
