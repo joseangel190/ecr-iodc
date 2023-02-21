@@ -31,5 +31,5 @@ jobs:
         REPOSITORY: ${{ secrets.REPOSITORY }}
         IMAGE_TAG: ${{ github.sha }}
       run: 
-        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./crud/Dockerfile .
+        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./crud/Dockerfile
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
