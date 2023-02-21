@@ -1,0 +1,57 @@
+pipeline{
+  agent none
+  stages{
+    stage('Checkout Application') {
+      agent { docker { image 'maven:3.8.5-openjdk-17'} }
+      stages{
+        stage('Build Application') {
+          steps{
+            sh 'mvn clean -DskipTests'
+          }
+        }
+        stage('Test Application') {
+          steps{
+            sh 'mvn test package'
+          }
+        }
+        stage('SonarQube') {
+          steps{
+            sh 'mvn clean verify sonar:sonar -Dsonar.host.url=http://35.237.17.212:9000 -Dsonar.login=squ_71eef46c2e9b24f5ee3100d9fadc716c230a8162'
+          }
+        }
+      }
+    }
+    stage('Build Docker Image') {
+      agent { label 'master' }
+      steps{
+        script{
+          app = docker.build('joseangel190/crud-be')        
+        }
+      }
+    } 
+    stage('Push Docker Image') {
+      agent { label 'master' }
+      steps{
+        script{
+          withDockerRegistry(credentialsId: 'DOCKERHUB') {
+            app.push("0.0.${BUILD_NUMBER}")
+            app.push("latest")
+          }      
+        }
+      }
+    }
+    stage('Deploy with Kubernetes') {
+      agent { label 'master' }
+      steps{
+        sh 'gcloud container clusters get-credentials my-first-cluster-1 --zone us-central1-c --project compelling-weft-374317'
+        sh '''
+          kubectl apply -f **/namespace.yml
+          kubectl apply -f **/service.yml
+          kubectl delete -f **/deployment.yml
+          kubectl apply -f **/deployment.yml
+          kubectl --namespace=crud get all -o wide 
+        '''
+      }
+    }
+  }
+}

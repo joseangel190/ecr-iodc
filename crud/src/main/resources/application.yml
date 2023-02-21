@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: Crud
+  data:
+    mongodb:
+      uri: mongodb+srv://${DB_USR}:${DB_PWD}@cluster.grpjrxn.mongodb.net/?retryWrites=true&w=majority
+      database: Crud
+server:
+  port: 9000

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crud-be
+  namespace: crud
+  labels:
+    app: crud-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crud-be
+  template:
+    metadata:
+      labels:
+        app: crud-be
+    spec:
+      containers:
+        - name: crud-be
+          image: joseangel190/crud-be
+          env:
+            - name: DB_USR
+              value: "jose"
+            - name: DB_PWD
+              value: "76600657"
+          ports:
+            - containerPort: 9000
+      restartPolicy: Always
