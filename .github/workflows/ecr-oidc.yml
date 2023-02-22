@@ -45,4 +45,4 @@ jobs:
         REPOSITORY: ${{ secrets.REPOSITORY }}
         IMAGE_TAG: ${{ github.sha }}
       run: 
-        docker system prune -a && cd crud && docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . && docker images && docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+        docker system prune -a && cd crud && docker build -t docker push 849514089141.dkr.ecr.us-east-1.amazonaws.com/java-crud:$IMAGE_TAG . && docker images && docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
